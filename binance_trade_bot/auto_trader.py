@@ -8,6 +8,7 @@ from .config import Config
 from .database import Database
 from .logger import Logger
 from .models import Coin, CoinValue, Pair
+from .models.coin_value_eur import CoinValueEur
 
 
 class AutoTrader:
@@ -189,4 +190,23 @@ class AutoTrader:
                 btc_value = all_ticker_values.get_price(coin + "BTC")
                 cv = CoinValue(coin, balance, usd_value, btc_value, datetime=now)
                 session.add(cv)
+                self.db.send_update(cv)
+    def update_values_eur(self):
+        """
+        Log current value state of all altcoin balances against BTC and USDT in DB.
+        """
+        all_ticker_values = self.manager.get_all_market_tickers()
+
+        now = datetime.now()
+
+        session: Session
+        with self.db.db_session() as session:
+            coins: List[Coin] = session.query(Coin).all()
+            for coin in coins:
+                balance = self.manager.get_currency_balance(coin.symbol)
+                eur_value = all_ticker_values.get_price(coin + "EUR")
+                btc_value = all_ticker_values.get_price(coin + "BTC")
+                cv = CoinValueEur(coin, balance, eur_value, btc_value, datetime=now)
+                session.add(cv)
+                self.logger.info("Updating Coin Eur-Value of" + coin.symbol + " to: " + str(eur_value))
                 self.db.send_update(cv)
