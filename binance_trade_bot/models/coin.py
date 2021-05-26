@@ -5,7 +5,7 @@ from .base import Base
 
 class Coin(Base):
     __tablename__ = "coins"
-    symbol = Column(String, primary_key=True)
+    symbol = Column(String(8), primary_key=True)
     enabled = Column(Boolean)
 
     def __init__(self, symbol, enabled=True):

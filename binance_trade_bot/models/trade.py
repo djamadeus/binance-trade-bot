@@ -19,15 +19,15 @@ class Trade(Base):  # pylint: disable=too-few-public-methods
 
     id = Column(Integer, primary_key=True)
 
-    alt_coin_id = Column(String, ForeignKey("coins.symbol"))
+    alt_coin_id = Column(String(8), ForeignKey("coins.symbol"))
     alt_coin = relationship("Coin", foreign_keys=[alt_coin_id], lazy="joined")
 
-    crypto_coin_id = Column(String, ForeignKey("coins.symbol"))
+    crypto_coin_id = Column(String(8), ForeignKey("coins.symbol"))
     crypto_coin = relationship("Coin", foreign_keys=[crypto_coin_id], lazy="joined")
 
     selling = Column(Boolean)
 
-    state = Column(Enum(TradeState))
+    state = Column(String(8))
 
     alt_starting_balance = Column(Float)
     alt_trade_amount = Column(Float)

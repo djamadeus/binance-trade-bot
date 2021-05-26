@@ -16,7 +16,7 @@ from .models import *  # pylint: disable=wildcard-import
 
 
 class Database:
-    def __init__(self, logger: Logger, config: Config, uri="sqlite:///data/crypto_trading.db"):
+    def __init__(self, logger: Logger, config: Config, uri="exa+pyodbc://exasolution-uo2214lv2_64"):
         self.logger = logger
         self.config = config
         self.engine = create_engine(uri)
@@ -68,7 +68,9 @@ class Database:
 
         # For all the combinations of coins in the database, add a pair to the database
         with self.db_session() as session:
-            coins: List[Coin] = session.query(Coin).filter(Coin.enabled).all()
+            #coins: List[Coin] = session.query(Coin).filter(Coin.enabled).all()
+            #Filter not sqlalchemy-exasol-compatible
+            coins: List[Coin] = session.query(Coin).all()
             for from_coin in coins:
                 for to_coin in coins:
                     if from_coin != to_coin:

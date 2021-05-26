@@ -10,7 +10,7 @@ from .coin import Coin
 class CurrentCoin(Base):  # pylint: disable=too-few-public-methods
     __tablename__ = "current_coin_history"
     id = Column(Integer, primary_key=True)
-    coin_id = Column(String, ForeignKey("coins.symbol"))
+    coin_id = Column(String(8), ForeignKey("coins.symbol"))
     coin = relationship("Coin")
     datetime = Column(DateTime)
 

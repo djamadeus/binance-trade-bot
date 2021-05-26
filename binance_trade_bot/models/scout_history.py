@@ -13,7 +13,7 @@ class ScoutHistory(Base):
 
     id = Column(Integer, primary_key=True)
 
-    pair_id = Column(String, ForeignKey("pairs.id"))
+    pair_id = Column(Integer, ForeignKey("pairs.id"))
     pair = relationship("Pair")
 
     target_ratio = Column(Float)

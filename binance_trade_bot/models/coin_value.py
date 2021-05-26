@@ -21,14 +21,14 @@ class CoinValue(Base):
 
     id = Column(Integer, primary_key=True)
 
-    coin_id = Column(String, ForeignKey("coins.symbol"))
+    coin_id = Column(String(8), ForeignKey("coins.symbol"))
     coin = relationship("Coin")
 
     balance = Column(Float)
     usd_price = Column(Float)
     btc_price = Column(Float)
 
-    interval = Column(Enum(Interval))
+    interval = Column(String(8))
 
     datetime = Column(DateTime)
 
