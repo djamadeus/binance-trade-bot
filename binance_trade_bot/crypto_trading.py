@@ -37,7 +37,7 @@ def main():
     db.migrate_old_state()
 
     #trader.initialize()
-    trader.update_values_eur()
+    trader.update_values()
     schedule = SafeScheduler(logger)
     # schedule.every(config.SCOUT_SLEEP_TIME).seconds.do(trader.scout).tag("scouting")
     schedule.every(1).minutes.do(trader.update_values).tag("updating value history")
