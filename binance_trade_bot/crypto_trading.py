@@ -7,6 +7,7 @@ from .database import Database
 from .logger import Logger
 from .scheduler import SafeScheduler
 from .strategies import get_strategy
+import math
 
 
 def main():
@@ -44,7 +45,10 @@ def main():
     #schedule.every(1).minutes.do(trader.update_values_eur).tag("updating value history")
     # schedule.every(1).minutes.do(db.prune_scout_history).tag("pruning scout history")
     # schedule.every(1).hours.do(db.prune_value_history).tag("pruning value history")
-
+    starting = math.floor(time.time() / 60)
     while True:
-        schedule.run_pending()
+        if math.floor(time.time() / 60) > starting:
+            starting = math.floor(time.time() / 60)
+            schedule.run_pending()
         time.sleep(1)
+
