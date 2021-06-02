@@ -49,6 +49,8 @@ def main():
     while True:
         if math.floor(time.time() / 60) > starting:
             starting = math.floor(time.time() / 60)
+            logger.info("starting" + str(starting))
             schedule.run_pending()
         time.sleep(1)
+        logger.info(math.floor(time.time() / 60))
 
