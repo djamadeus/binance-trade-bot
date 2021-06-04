@@ -32,7 +32,7 @@ def main():
     trader = strategy(manager, db, logger, config)
     logger.info(f"Chosen strategy: {config.STRATEGY}")
 
-    logger.info("Creating database schema if it doesn't already exist")
+    #logger.info("Creating database schema if it doesn't already exist")
     ##db.create_database()
 
     ##db.set_coins(config.SUPPORTED_COIN_LIST)
@@ -51,7 +51,7 @@ def main():
         if math.floor(time.time() / 60) > starting:
             starting = math.floor(time.time() / 60)
             try:
-                ##trader.update_values()
+                trader.update_values()
                 trader.scout()
             except:
                 logger.info(f"An error occurred: {sys.exc_info()[0]}")
