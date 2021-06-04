@@ -10,6 +10,7 @@ from socketio.exceptions import ConnectionError as SocketIOConnectionError
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
+
 from .config import Config
 from .logger import Logger
 from .models import *  # pylint: disable=wildcard-import
@@ -116,6 +117,15 @@ class Database:
             coin = current_coin.coin
             session.expunge(coin)
             return coin
+
+    def get_current_action(self) -> ActionRecommendation:
+        session: Session
+        with self.db_session() as session:
+            action_recommendation = session.query(ActionRecommendation).order_by(ActionRecommendation.datetime.desc()).first()
+            if action_recommendation is None:
+                return None
+            session.expunge(action_recommendation)
+            return action_recommendation
 
     def get_pair(self, from_coin: Union[Coin, str], to_coin: Union[Coin, str]):
         from_coin = self.get_coin(from_coin)
