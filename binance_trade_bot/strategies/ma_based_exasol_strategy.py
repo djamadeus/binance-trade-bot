@@ -18,6 +18,14 @@ class Strategy(AutoTrader):
         self.logger.info("scouting")
         action_recommendation = self.db.get_current_action()
         self.logger.info(f"Datetime: {action_recommendation.datetime} Action: {action_recommendation.trade_action}")
+        current_coin = self.db.get_current_coin()
+        all_tickers = self.manager.get_all_market_tickers()
+        current_coin_price = all_tickers.get_price(current_coin + self.config.BRIDGE)
+        self.logger.info(f"Datetime: {datetime.now()} Current Coin: {current_coin.symbol} USDT-Price: {current_coin_price}")
+        if action_recommendation.trade_action == "sell":
+            self.sell_to_bridge(current_coin, all_tickers)
+        if action_recommendation.trade_action == "buy":
+            self.buy_from_bridge(current_coin, all_tickers)
         # Display on the console, the current coin+Bridge, so users can see *some* activity and not think the bot has
         # stopped. Not logging though to reduce log size.
 

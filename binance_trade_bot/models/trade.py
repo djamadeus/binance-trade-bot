@@ -39,7 +39,7 @@ class Trade(Base):  # pylint: disable=too-few-public-methods
     def __init__(self, alt_coin: Coin, crypto_coin: Coin, selling: bool):
         self.alt_coin = alt_coin
         self.crypto_coin = crypto_coin
-        self.state = TradeState.STARTING
+        self.state = "STARTING"
         self.selling = selling
         self.datetime = datetime.utcnow()
 

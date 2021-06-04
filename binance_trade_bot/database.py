@@ -227,7 +227,7 @@ class Database:
         Base.metadata.create_all(self.engine)
 
     def start_trade_log(self, from_coin: Coin, to_coin: Coin, selling: bool):
-        return TradeLog(self, from_coin, to_coin, selling)
+        return TradeLog(self, from_coin, to_coin, self.logger, selling)
 
     def send_update(self, model):
         if not self.socketio_connect():
@@ -271,7 +271,7 @@ class Database:
 
 
 class TradeLog:
-    def __init__(self, db: Database, from_coin: Coin, to_coin: Coin, selling: bool):
+    def __init__(self, db: Database, from_coin: Coin, to_coin: Coin, logger: Logger, selling: bool):
         self.db = db
         session: Session
         with self.db.db_session() as session:
@@ -290,7 +290,7 @@ class TradeLog:
             trade.alt_starting_balance = alt_starting_balance
             trade.alt_trade_amount = alt_trade_amount
             trade.crypto_starting_balance = crypto_starting_balance
-            trade.state = TradeState.ORDERED
+            trade.state = "ORDERED"
             self.db.send_update(trade)
 
     def set_complete(self, crypto_trade_amount):
@@ -298,7 +298,7 @@ class TradeLog:
         with self.db.db_session() as session:
             trade: Trade = session.merge(self.trade)
             trade.crypto_trade_amount = crypto_trade_amount
-            trade.state = TradeState.COMPLETE
+            trade.state = "COMPLETE"
             self.db.send_update(trade)
 
 

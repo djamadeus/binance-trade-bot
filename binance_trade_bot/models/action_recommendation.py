@@ -8,7 +8,7 @@ from .coin import Coin
 
 
 class ActionRecommendation(Base):  # pylint: disable=too-few-public-methods
-    __tablename__ = "action_recomm"
+    __tablename__ = "action_recommendation"
     id = Column(Integer, primary_key=True)
     trade_action = Column(String(8))
     price = Column(Float)

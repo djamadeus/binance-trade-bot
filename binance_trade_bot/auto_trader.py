@@ -48,6 +48,49 @@ class AutoTrader:
         self.logger.info("Couldn't buy, going back to scouting mode...")
         return None
 
+    def sell_to_bridge(self, from_coin: Coin, all_tickers: AllTickers):
+        """
+        Jump from the source coin to the destination coin through bridge coin
+        """
+        can_sell = False
+        balance = self.manager.get_currency_balance(from_coin.symbol)
+        from_coin_price = all_tickers.get_price(from_coin + self.config.BRIDGE)
+        min_balance = self.manager.get_min_notional(from_coin, self.config.BRIDGE)
+        self.logger.info(f"Min Balance required to sell: {min_balance}")
+        if balance and balance * from_coin_price > min_balance:
+            can_sell = True
+        else:
+            self.logger.info("Skipping sell")
+
+        if can_sell:
+            result = self.manager.sell_alt(from_coin, self.config.BRIDGE, all_tickers)
+            if result is not None:
+                self.logger.info(f"Sold for: {result['price']}")
+            return result
+        else:
+            self.logger.info("Couldn't sell, going back to scouting mode...")
+            return None
+
+    def buy_from_bridge(self, to_coin: Coin, all_tickers: AllTickers):
+        """
+        Jump from the source coin to the destination coin through bridge coin
+        """
+        can_buy = False
+        balance = self.manager.get_currency_balance(to_coin.symbol)
+        self.logger.info(f"Current Coin Balance: {balance}")
+        if balance == 0:
+            can_buy = True
+        else:
+            self.logger.info("Skipping buy")
+
+        if can_buy:
+            result = self.manager.buy_alt(self.config.BRIDGE, to_coin, all_tickers)
+            self.logger.info(f"Bought for: {result['price']}")
+            return result
+        else:
+            self.logger.info("Couldn't buy, going back to scouting mode...")
+            return None
+
     def update_trade_threshold(self, coin: Coin, coin_price: float, all_tickers: AllTickers):
         """
         Update all the coins with the threshold of buying the current held coin

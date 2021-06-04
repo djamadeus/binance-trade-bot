@@ -218,25 +218,27 @@ class BinanceAPIManager:
         """
         Buy altcoin
         """
+
         trade_log = self.db.start_trade_log(origin_coin, target_coin, False)
         origin_symbol = origin_coin.symbol
         target_symbol = target_coin.symbol
 
         origin_balance = self.get_currency_balance(origin_symbol)
+        self.logger.info(f"origin balance: {origin_balance}")
         target_balance = self.get_currency_balance(target_symbol)
-        from_coin_price = all_tickers.get_price(origin_symbol + target_symbol)
-
-        order_quantity = self._buy_quantity(origin_symbol, target_symbol, target_balance, from_coin_price)
-        self.logger.info(f"BUY QTY {order_quantity} of <{origin_symbol}>")
-
+        target_coin_price = all_tickers.get_price(target_coin + origin_symbol)
+        self.logger.info(f"target price: {target_coin_price}")
+        #order_quantity = self._buy_quantity(origin_symbol, target_symbol, target_balance, from_coin_price)
+        order_quantity = math.floor(origin_balance / target_coin_price)
+        self.logger.info(f"BUY QTY {order_quantity} of <{target_symbol}>")
         # Try to buy until successful
         order = None
         while order is None:
             try:
                 order = self.binance_client.order_limit_buy(
-                    symbol=origin_symbol + target_symbol,
+                    symbol=target_symbol + origin_symbol,
                     quantity=order_quantity,
-                    price=from_coin_price,
+                    price=target_coin_price,
                 )
                 self.logger.info(order)
             except BinanceAPIException as e:
@@ -247,12 +249,12 @@ class BinanceAPIManager:
 
         trade_log.set_ordered(origin_balance, target_balance, order_quantity)
 
-        stat = self.wait_for_order(origin_symbol, target_symbol, order["orderId"])
+        stat = self.wait_for_order(target_symbol, origin_symbol, order["orderId"])
 
         if stat is None:
             return None
 
-        self.logger.info(f"Bought {origin_symbol}")
+        self.logger.info(f"Bought {target_symbol}")
         trade_log.set_complete(stat["cummulativeQuoteQty"])
 
         return order
@@ -270,12 +272,15 @@ class BinanceAPIManager:
         """
         Sell altcoin
         """
+        self.logger.info(f"start tradelog: {origin_coin},{target_coin}")
         trade_log = self.db.start_trade_log(origin_coin, target_coin, True)
+        self.logger.info("tradelog started")
         origin_symbol = origin_coin.symbol
         target_symbol = target_coin.symbol
 
         origin_balance = self.get_currency_balance(origin_symbol)
         target_balance = self.get_currency_balance(target_symbol)
+        self.logger.info(f"get price: {origin_symbol},{target_symbol}")
         from_coin_price = all_tickers.get_price(origin_symbol + target_symbol)
 
         order_quantity = self._sell_quantity(origin_symbol, target_symbol, origin_balance)
