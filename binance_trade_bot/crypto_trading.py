@@ -45,14 +45,21 @@ def main():
     #schedule.every(1).minutes.do(trader.update_values_eur).tag("updating value history")
     # schedule.every(1).minutes.do(db.prune_scout_history).tag("pruning scout history")
     # schedule.every(1).hours.do(db.prune_value_history).tag("pruning value history")
-    trader.scout()
+    logger.info(f"Trader Status: {config.TRADE}")
+    logger.info(f"Crawler Status: {config.CRAWL}")
+    if config.CRAWL == "1":
+        trader.update_values()
+    if config.TRADE == "1":
+        trader.scout()
     starting = math.floor(time.time() / 60)
     while True:
         if math.floor(time.time() / 60) > starting:
             starting = math.floor(time.time() / 60)
             try:
-                trader.update_values()
-                trader.scout()
+                if config.CRAWL == "1":
+                    trader.update_values()
+                if config.TRADE == "1":
+                    trader.scout()
             except:
                 logger.info(f"An error occurred: {sys.exc_info()[0]}")
         time.sleep(1)
