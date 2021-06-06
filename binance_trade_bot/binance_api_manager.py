@@ -227,6 +227,7 @@ class BinanceAPIManager:
         self.logger.info(f"origin balance: {origin_balance}")
         target_balance = self.get_currency_balance(target_symbol)
         target_coin_price = all_tickers.get_price(target_coin + origin_symbol)
+        target_coin_price = target_coin_price * 0.999
         self.logger.info(f"target price: {target_coin_price}")
         #order_quantity = self._buy_quantity(origin_symbol, target_symbol, target_balance, from_coin_price)
         order_quantity = math.floor(origin_balance / target_coin_price)
@@ -287,6 +288,7 @@ class BinanceAPIManager:
         self.logger.info(f"Selling {order_quantity} of {origin_symbol}")
 
         self.logger.info(f"Balance is {origin_balance}")
+        from_coin_price = from_coin_price * 0.001
         order = None
         while order is None:
             # Should sell at calculated price to avoid lost coin
