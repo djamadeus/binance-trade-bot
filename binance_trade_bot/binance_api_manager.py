@@ -288,7 +288,7 @@ class BinanceAPIManager:
         self.logger.info(f"Selling {order_quantity} of {origin_symbol}")
 
         self.logger.info(f"Balance is {origin_balance}")
-        from_coin_price = round(from_coin_price * 0.001, 3)
+        from_coin_price = round(from_coin_price * 1.001, 3)
         order = None
         while order is None:
             # Should sell at calculated price to avoid lost coin
