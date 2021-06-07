@@ -25,7 +25,12 @@ class Strategy(AutoTrader):
         if action_recommendation.trade_action == "sell":
             self.sell_to_bridge(current_coin, all_tickers)
         if action_recommendation.trade_action == "buy":
-            self.buy_from_bridge(current_coin, all_tickers)
+            result = self.buy_from_bridge(current_coin, all_tickers)
+            if not result is None:
+                sell_price = round(float(result['price'])*1.01, 3)
+                self.logger.info(f"Setting Sell for: {sell_price}")
+                self.sell_to_bridge_for_price(current_coin, all_tickers, sell_price)
+
         # Display on the console, the current coin+Bridge, so users can see *some* activity and not think the bot has
         # stopped. Not logging though to reduce log size.
 

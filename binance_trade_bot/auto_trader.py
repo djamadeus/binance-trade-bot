@@ -71,6 +71,28 @@ class AutoTrader:
             self.logger.info("Couldn't sell, going back to scouting mode...")
             return None
 
+    def sell_to_bridge_for_price(self, from_coin: Coin, all_tickers: AllTickers, from_coin_price: float):
+        """
+        Jump from the source coin to the destination coin through bridge coin
+        """
+        can_sell = False
+        balance = self.manager.get_currency_balance(from_coin.symbol)
+        min_balance = self.manager.get_min_notional(from_coin, self.config.BRIDGE)
+        self.logger.info(f"Min Balance required to sell: {min_balance}")
+        if balance and balance * from_coin_price > min_balance:
+            can_sell = True
+        else:
+            self.logger.info("Skipping sell")
+
+        if can_sell:
+            result = self.manager.sell_alt(from_coin, self.config.BRIDGE, all_tickers)
+            if result is not None:
+                self.logger.info(f"Sold for: {result['price']}")
+            return result
+        else:
+            self.logger.info("Couldn't sell, going back to scouting mode...")
+            return None
+
     def buy_from_bridge(self, to_coin: Coin, all_tickers: AllTickers):
         """
         Jump from the source coin to the destination coin through bridge coin
