@@ -260,8 +260,8 @@ class BinanceAPIManager:
 
         return order
 
-    def sell_alt(self, origin_coin: Coin, target_coin: Coin, all_tickers: AllTickers):
-        return self.retry(self._sell_alt, origin_coin, target_coin, all_tickers)
+    def sell_alt_for_price(self, origin_coin: Coin, target_coin: Coin, all_tickers: AllTickers, price):
+        return self.retry(self._sell_alt_for_price, origin_coin, target_coin, all_tickers, price)
 
     def _sell_quantity(self, origin_symbol: str, target_symbol: str, origin_balance: float = None):
         origin_balance = origin_balance or self.get_currency_balance(origin_symbol)
@@ -289,6 +289,54 @@ class BinanceAPIManager:
 
         self.logger.info(f"Balance is {origin_balance}")
         from_coin_price = round(from_coin_price * 1.001, 3)
+        order = None
+        while order is None:
+            # Should sell at calculated price to avoid lost coin
+            order = self.binance_client.order_limit_sell(
+                symbol=origin_symbol + target_symbol, quantity=(order_quantity), price=from_coin_price
+            )
+
+        self.logger.info("order")
+        self.logger.info(order)
+
+        trade_log.set_ordered(origin_balance, target_balance, order_quantity)
+
+        # Binance server can take some time to save the order
+        self.logger.info("Waiting for Binance")
+
+        stat = self.wait_for_order(origin_symbol, target_symbol, order["orderId"])
+
+        if stat is None:
+            return None
+
+        new_balance = self.get_currency_balance(origin_symbol)
+        while new_balance >= origin_balance:
+            new_balance = self.get_currency_balance(origin_symbol)
+
+        self.logger.info(f"Sold {origin_symbol}")
+
+        trade_log.set_complete(stat["cummulativeQuoteQty"])
+
+        return order
+
+    def _sell_alt_for_price(self, origin_coin: Coin, target_coin: Coin, all_tickers: AllTickers, from_coin_price: float):
+        """
+        Sell altcoin
+        """
+        self.logger.info(f"start tradelog: {origin_coin},{target_coin}")
+        trade_log = self.db.start_trade_log(origin_coin, target_coin, True)
+        self.logger.info("tradelog started")
+        origin_symbol = origin_coin.symbol
+        target_symbol = target_coin.symbol
+
+        origin_balance = self.get_currency_balance(origin_symbol)
+        target_balance = self.get_currency_balance(target_symbol)
+
+        order_quantity = self._sell_quantity(origin_symbol, target_symbol, origin_balance)
+        self.logger.info(f"Selling {order_quantity} of {origin_symbol}")
+
+        self.logger.info(f"Balance is {origin_balance}")
+
         order = None
         while order is None:
             # Should sell at calculated price to avoid lost coin

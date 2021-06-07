@@ -85,7 +85,7 @@ class AutoTrader:
             self.logger.info("Skipping sell")
 
         if can_sell:
-            result = self.manager.sell_alt(from_coin, self.config.BRIDGE, all_tickers)
+            result = self.manager.sell_alt_for_price(from_coin, self.config.BRIDGE, all_tickers, from_coin_price)
             if result is not None:
                 self.logger.info(f"Sold for: {result['price']}")
             return result

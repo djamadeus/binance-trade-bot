@@ -13,9 +13,10 @@ class ActionRecommendation(Base):  # pylint: disable=too-few-public-methods
     trade_action = Column(String(8))
     price = Column(Float)
     datetime = Column(DateTime)
+    margin = Column(Float)
 
     def __init__(self):
         self.datetime = datetime.utcnow()
 
     def info(self):
-        return {"datetime": self.datetime.isoformat(), "price": self.price, "trade_action": self.trade_action}
+        return {"datetime": self.datetime.isoformat(), "price": self.price, "margin": self.margin, "trade_action": self.trade_action}

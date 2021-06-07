@@ -22,12 +22,13 @@ class Strategy(AutoTrader):
         all_tickers = self.manager.get_all_market_tickers()
         current_coin_price = all_tickers.get_price(current_coin + self.config.BRIDGE)
         self.logger.info(f"Datetime: {datetime.now()} Current Coin: {current_coin.symbol} USDT-Price: {current_coin_price}")
+
         if action_recommendation.trade_action == "sell":
             self.sell_to_bridge(current_coin, all_tickers)
         if action_recommendation.trade_action == "buy":
             result = self.buy_from_bridge(current_coin, all_tickers)
             if not result is None:
-                sell_price = round(float(result['price'])*1.01, 3)
+                sell_price = round(float(result['price']) * action_recommendation.margin, 3)
                 self.logger.info(f"Setting Sell for: {sell_price}")
                 self.sell_to_bridge_for_price(current_coin, all_tickers, sell_price)
 
