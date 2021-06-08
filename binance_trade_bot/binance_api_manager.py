@@ -263,6 +263,9 @@ class BinanceAPIManager:
     def sell_alt_for_price(self, origin_coin: Coin, target_coin: Coin, all_tickers: AllTickers, price):
         return self.retry(self._sell_alt_for_price, origin_coin, target_coin, all_tickers, price)
 
+    def sell_alt(self, origin_coin: Coin, target_coin: Coin, all_tickers: AllTickers):
+        return self.retry(self._sell_alt, origin_coin, target_coin, all_tickers)
+
     def _sell_quantity(self, origin_symbol: str, target_symbol: str, origin_balance: float = None):
         origin_balance = origin_balance or self.get_currency_balance(origin_symbol)
 
