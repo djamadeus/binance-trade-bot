@@ -20,6 +20,7 @@ class Database:
     def __init__(self, logger: Logger, config: Config, uri="exa+pyodbc://exasolution-uo2214lv2_64"):
         self.logger = logger
         self.config = config
+        uri = f"exa+pyodbc://{self.config.ODBC_DSN}"
         self.engine = create_engine(uri)
         self.SessionMaker = sessionmaker(bind=self.engine)
         self.socketio_client = Client()

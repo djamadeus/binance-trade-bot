@@ -73,3 +73,4 @@ class Config:  # pylint: disable=too-few-public-methods,too-many-instance-attrib
         self.BUY_TIMEOUT = os.environ.get("BUY_TIMEOUT") or config.get(USER_CFG_SECTION, "buy_timeout")
         self.TRADE = config.get(USER_CFG_SECTION, "trade")
         self.CRAWL = config.get(USER_CFG_SECTION, "crawl")
+        self.ODBC_DSN = config.get(USER_CFG_SECTION, "odbc_dsn")
