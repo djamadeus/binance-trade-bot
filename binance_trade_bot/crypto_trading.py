@@ -58,7 +58,6 @@ def main():
             try:
                 if config.CRAWL == "1":
                     trader.update_values()
-                    raise ValueError('A very specific bad thing happened.')
                 if config.TRADE == "1":
                     trader.scout()
             except:
