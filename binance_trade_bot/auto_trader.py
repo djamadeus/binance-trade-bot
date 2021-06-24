@@ -256,6 +256,9 @@ class AutoTrader:
                 self.logger.info("Updating Coin USDT-Value of " + coin.symbol + " to: " + str(usd_value))
                 self.db.send_update(cv)
 
+            session.commit()
+            session.close()
+
     def update_values_eur(self):
         """
         Log current value state of all altcoin balances against BTC and USDT in DB.
