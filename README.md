@@ -136,6 +136,12 @@ pre-commit install
 The scouting algorithm is unlikely to be changed. If you'd like to contribute an alternative
 method, [add a new strategy](binance_trade_bot/strategies/README.md).
 
+## IntelliJ Run Configuration:
+
+<p align="center">
+  <img src = "https://static.wunderdata.com/trader_run.png">
+</p>
+
 ## Related Projects
 
 Thanks to a group of talented developers, there is now a [Telegram bot for remotely managing this project](https://github.com/lorcalhost/BTB-manager-telegram).
