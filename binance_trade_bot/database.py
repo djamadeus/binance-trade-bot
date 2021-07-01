@@ -17,7 +17,7 @@ from .models import *  # pylint: disable=wildcard-import
 
 
 class Database:
-    def __init__(self, logger: Logger, config: Config, uri="exa+pyodbc://exasolution-uo2214lv2_64"):
+    def __init__(self, logger: Logger, config: Config):
         self.logger = logger
         self.config = config
         uri = f"exa+pyodbc://{self.config.ODBC_DSN}"

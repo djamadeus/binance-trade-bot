@@ -255,9 +255,9 @@ class AutoTrader:
                 session.add(cv)
                 self.logger.info("Updating Coin USDT-Value of " + coin.symbol + " to: " + str(usd_value))
                 self.db.send_update(cv)
+                #ama: commit not in original code, but eleminates random warnings on identity conflicts in session.
+                session.commit()
 
-            session.commit()
-            session.close()
 
     def update_values_eur(self):
         """
@@ -278,3 +278,4 @@ class AutoTrader:
                 session.add(cv)
                 self.logger.info("Updating Coin Eur-Value of " + coin.symbol + " to: " + str(eur_value))
                 self.db.send_update(cv)
+                session.commit()

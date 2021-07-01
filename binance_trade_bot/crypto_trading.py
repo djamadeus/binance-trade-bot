@@ -32,13 +32,15 @@ def main():
     trader = strategy(manager, db, logger, config)
     logger.info(f"Chosen strategy: {config.STRATEGY}")
 
-    #logger.info("Creating database schema if it doesn't already exist")
+    ## removed db creation temporarely for safety precautions
+    ##logger.info("Creating database schema if it doesn't already exist")
+
     ##db.create_database()
 
     ##db.set_coins(config.SUPPORTED_COIN_LIST)
     ##db.migrate_old_state()
 
-    #trader.initialize()
+    ##trader.initialize()
     ##trader.update_values()
     # schedule.every(config.SCOUT_SLEEP_TIME).seconds.do(trader.scout).tag("scouting")
     #schedule.every(1).minutes.do(trader.update_values).tag("updating value history")
