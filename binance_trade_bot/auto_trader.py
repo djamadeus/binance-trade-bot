@@ -100,7 +100,7 @@ class AutoTrader:
         can_buy = False
         balance = self.manager.get_currency_balance(to_coin.symbol)
         self.logger.info(f"Current Coin Balance: {balance}")
-        if balance == 0:
+        if balance < 1:
             can_buy = True
         else:
             self.logger.info("Skipping buy")
