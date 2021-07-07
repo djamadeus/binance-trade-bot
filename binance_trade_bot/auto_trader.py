@@ -107,7 +107,8 @@ class AutoTrader:
 
         if can_buy:
             result = self.manager.buy_alt(self.config.BRIDGE, to_coin, all_tickers)
-            self.logger.info(f"Bought for: {result['price']}")
+            if result is not None:
+                self.logger.info(f"Bought for: {result['price']}")
             return result
         else:
             self.logger.info("Couldn't buy, going back to scouting mode...")
